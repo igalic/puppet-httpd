@@ -1,0 +1,56 @@
+httpd
+
+This is the httpd module.
+
+License
+-------
+
+
+Contact
+-------
+
+
+Support
+-------
+
+Please log tickets and issues at our [Projects site](http://projects.example.com)
+
+Use
+---
+
+To use the httpd module we have to include, optionally passing it paramters:
+
+    class { 'httpd':
+        php            => true,
+        php_extensions => [ 'php-geoip', ],
+    }
+
+We can now go ahead and create an httpd instance:
+
+    httpd::instance { 'esotericsystems.at':
+        port      => 8000,
+        shortname => 'esat',
+        wsgi      => true,
+    }
+
+This creates a "domain" running under a specific user on a specific port.
+It creates also a logrotate script and an upstart job.
+
+Finally, we can now go ahead and add a couple of vhosts:
+
+    httpd::vhost { 'pkg.esotericsystems.at':
+        domain  => 'esotericsystems.at'
+        type    => 'static'
+        docroot => '/srv/pkgs/freight',
+        options => [ '+Indexes', ],
+    }
+    httpd::vhost { 'blag.esotericsystems.at':
+        domain  => 'esotericsystems.at'
+        type    => 'php'
+    }
+    httpd::vhost { 'awesomely.secure.esotericsystems.at':
+        domain  => 'esotericsystems.at',
+        type    => 'wsgi',
+        proto   => 'https',
+    }
+

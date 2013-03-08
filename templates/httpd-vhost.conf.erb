@@ -1,0 +1,44 @@
+# This configuration file is managed by puppet
+# any attempt to alter it will be revert on the next puppet run
+
+Include <%= @confdir -%>/extra/defines.conf
+Include ${EXTRACONF}/macro.conf
+
+Use Domain <%= @mpm -%>  <%= @interface -%>:<%= @port %>
+
+<% if @php -%>
+Include ${EXTRACONF}/php.conf
+<% end -%>
+<% if @passenger -%>
+Include ${EXTRACONF}/passenger.conf
+<% end -%>
+
+
+<% if @modules -%>
+# Additional modules:
+<% @modules.each |mod| -%>
+Use LoadM <%= val %>
+<% end -%>
+<% end -%>
+
+<% if @pre_vhost_includes -%>
+# Additional Include(s) before we start off our vhost declarations
+<% @pre_vhost_includes.each |incl| -%>
+Include <%= incl %>
+<% end -%>
+<% end -%>
+
+<% if @vhosts -%>
+# VirtualHosts
+<% @vhosts.each |vhost| -%>
+Use <%= vhost.type %> <%= vhost.protocol %> <%= vhost.domain %> <%= vhost.port %>
+<% end -%>
+<% end -%>
+
+<% if @pre_vhost_includes -%>
+# Additional Include(s) after our vhost declarations
+<% @post_vhost_includes.each |incl| -%>
+Include <%= incl %>
+<% end -%>
+<% end -%>
+

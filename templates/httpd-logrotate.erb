@@ -1,0 +1,15 @@
+# This file is managed by Puppet.
+# Attemptes to modify it will be overwritten at the next puppet run.
+<%= @logdir -%>/<%= @domain -%>/error_log {
+  rotate 7
+  <%= @logrot_interval %>
+  minsize <%= @logrot_minsize %>
+  delaycompress
+  notifempty
+  compress
+  missingok
+  create 0644 <%= @domain %> <%= @domain %>
+  postrotate
+  <%= @httpd_bin %>  -f <%= @vhostconf -%>/<%= @domain %>  -k graceful > /dev/null 
+  endscript
+}
