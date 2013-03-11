@@ -23,6 +23,11 @@ define httpd::instance ( $domain = $title,
   include 'httpd::params'
   include 'account::virtual'
 
+  realize (
+    Account::Systemgroup[$domain],
+    Account::Hostinguser[$domain],
+  )
+
   # creates the configuration
   file { "${vhostconf}/${domain}/httpd.conf":
     content => template($conf_template),
