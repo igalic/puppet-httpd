@@ -1,9 +1,9 @@
 # This file is managed by Puppet.
 # Attemptes to modify it will be overwritten at the next puppet run.
-# httpd-<%= @shortname -%> - Apache HTTP Server for <%= @domain %>
+# httpd-<%= @shortname -%> - Apache HTTP Server for <%= @instance %>
 #
 
-# description     "Apache HTTP Server for <%= @domain -%>"
+# description     "Apache HTTP Server for <%= @instance -%>"
 
 start on virtual-filesystems
 stop on runlevel [06]
@@ -15,10 +15,10 @@ respawn limit 5 30
 manual
 <% end -%>
 
-setuid <%= @domain %>
-setgid <%= @domain %>
+setuid <%= @instance %>
+setgid <%= @instance %>
 console log
 
 script
-	exec  <%= @prefix -%>/bin/httpd -f <%= @vhostconf -%>/<%= @domain -%>/httpd.conf -DNO_DETACH -k start
+	exec  <%= @prefix -%>/bin/httpd -f <%= @vhostconf -%>/<%= @instance -%>/httpd.conf -DNO_DETACH -k start
 end script

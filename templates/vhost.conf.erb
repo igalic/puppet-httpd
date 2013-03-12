@@ -1,0 +1,6 @@
+<%# if @type contains WWW, we don't print the @subdomain -%>
+<% if @type.include? "WWW" -%>
+Use <%= @type %>VHost <%= @remote_proto %> <%= @instance %> <%= @remote_port %>
+<% else -%>
+Use <%= @type %>VHost <%= @remote_proto %> <%= @subdomain %> <%= @instance %> <%= @remote_port %>
+<% end -%>

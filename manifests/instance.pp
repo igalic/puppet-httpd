@@ -13,9 +13,11 @@ define httpd::instance ( $instance = $title,
   $enabled             = true,
   $logrot_interval     = 'weekly',
   $logrot_minsize      = '10M',
-  $conf_template       = $httpd::params::conf_template,
+  $conf_header_template = $httpd::params::conf_header_template,
+  $conf_footer_template = $httpd::params::conf_footer_template,
   $init_template       = $httpd::params::init_template,
   $logrot_template     = $httpd::params::logrot_template,
+  $confdir             = $httpd::params::confdir,
   $vhostconf           = $httpd::params::vhostconf,
   $logdir              = "${httpd::params::logdir}/${instance}",
   $prefix              = $httpd::params::prefix,
@@ -23,24 +25,36 @@ define httpd::instance ( $instance = $title,
 ){
   include 'httpd::params'
   include 'account::virtual'
+  include 'concat::setup'
 
   realize (
-    Account::Systemgroup[$domain],
-    Account::Hostinguser[$domain],
+    Account::Systemgroup[$instance],
+    Account::Hostinguser[$instance],
   )
 
-  file { "${vhostconf}/${domain}":
+  # Create the target dir for the Configuration:
+  file { "${vhostconf}/${instance}":
     ensure => 'directory',
     owner  => 'root',
     group  => 'wheel',
   }
-    
+
+  $configfile =  "${vhostconf}/${instance}/httpd.conf"
 
   # creates the configuration
-  file { "${vhostconf}/${domain}/httpd.conf":
-    content => template($conf_template),
+  concat { $configfile:
     owner   => 'root',
     group   => 'wheel',
+  }
+  concat::fragment { "${configfile}_header":
+    target  => $configfile,
+    content => template($conf_header_template),
+    order   => '00000',
+  }
+  concat::fragment { "${configfile}_footer":
+    target  => $configfile,
+    content => template($conf_footer_template),
+    order   => '99999',
   }
 
   # creates the service -- doesn't manage the service yet!
@@ -48,8 +62,8 @@ define httpd::instance ( $instance = $title,
     content => template($init_template),
     owner   => 'root',
     group   => 'root',
-    require => [ Account::Systemgroup[$domain],
-                Account::Hostinguser[$domain],
+    require => [ Account::Systemgroup[$instance],
+                Account::Hostinguser[$instance],
               ]
   }
   file { "/etc/init.d/httpd-${shortname}":

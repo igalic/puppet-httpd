@@ -26,16 +26,3 @@ Use LoadM <%= mod %>
 Include <%= incl %>
 <% end -%>
 <% end -%>
-<% if @vhosts and not @vhosts.emtpy? -%>
-# VirtualHosts
-<% @vhosts.each do |vhost| -%>
-Use <%= vhost.type %> <%= vhost.protocol %> <%= vhost.subdomain %> <% @instance %> <%= vhost.port %>
-<% end -%>
-<% end -%>
-
-<% if @pre_vhost_includes and not @pre_vhost_includes.empty? -%>
-# Additional Include(s) after our vhost declarations
-<% @post_vhost_includes.each do |incl| -%>
-Include <%= incl %>
-<% end -%>
-<% end -%>
