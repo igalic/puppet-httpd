@@ -4,7 +4,7 @@
 Include <%= @confdir %>/extra/defines.conf
 Include ${EXTRACONF}/macro.conf
 
-Use Domain <%= @mpm %> <%= @instance %> <%= @interface %>:<%= @port %>
+Use Instance <%= @mpm %> <%= @instance %> <%= @interface %>:<%= @port %>
 
 <% if @php -%>
 Include ${EXTRACONF}/php.conf
