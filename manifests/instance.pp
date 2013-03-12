@@ -1,4 +1,4 @@
-define httpd::instance ( $domain = $title,
+define httpd::instance ( $instance = $title,
   $port                = '',
   $interface           = '0.0.0.0',
   $shortname           = '',
@@ -9,6 +9,7 @@ define httpd::instance ( $domain = $title,
   $passenger           = $httpd::passenger,
   $wsgi                = $httpd::wsgi,
   $security            = $httpd::security,
+  $mpm                 = $httpd::params::mpm,
   $enabled             = true,
   $logrot_interval     = 'weekly',
   $logrot_minsize      = '10M',
@@ -16,7 +17,7 @@ define httpd::instance ( $domain = $title,
   $init_template       = $httpd::params::init_template,
   $logrot_template     = $httpd::params::logrot_template,
   $vhostconf           = $httpd::params::vhostconf,
-  $logdir              = "${httpd::params::logdir}/${domain}",
+  $logdir              = "${httpd::params::logdir}/${instance}",
   $prefix              = $httpd::params::prefix,
   $httpd_bin           = "${prefix}/bin/httpd"
 ){
@@ -27,6 +28,13 @@ define httpd::instance ( $domain = $title,
     Account::Systemgroup[$domain],
     Account::Hostinguser[$domain],
   )
+
+  file { "${vhostconf}/${domain}":
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'wheel',
+  }
+    
 
   # creates the configuration
   file { "${vhostconf}/${domain}/httpd.conf":
@@ -40,9 +48,13 @@ define httpd::instance ( $domain = $title,
     content => template($init_template),
     owner   => 'root',
     group   => 'root',
-    require => [ Systemgroup[$domain],
-                Systemuser[$domain],
+    require => [ Account::Systemgroup[$domain],
+                Account::Hostinguser[$domain],
               ]
+  }
+  file { "/etc/init.d/httpd-${shortname}":
+    ensure => link,
+    target => '/lib/init/upstart-job',
   }
 
   # Don't let logs rot! Rotate them:

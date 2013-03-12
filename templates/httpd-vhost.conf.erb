@@ -1,10 +1,10 @@
 # This configuration file is managed by puppet
 # any attempt to alter it will be revert on the next puppet run
 
-Include <%= @confdir -%>/extra/defines.conf
+Include <%= @confdir %>/extra/defines.conf
 Include ${EXTRACONF}/macro.conf
 
-Use Domain <%= @mpm -%>  <%= @interface -%>:<%= @port %>
+Use Domain <%= @mpm %> <%= @instance %> <%= @interface %>:<%= @port %>
 
 <% if @php -%>
 Include ${EXTRACONF}/php.conf
@@ -13,32 +13,29 @@ Include ${EXTRACONF}/php.conf
 Include ${EXTRACONF}/passenger.conf
 <% end -%>
 
-
-<% if @modules -%>
+<% if @modules and not @modules.empty? -%>
 # Additional modules:
-<% @modules.each |mod| -%>
-Use LoadM <%= val %>
+<% @modules.each do |mod| -%>
+Use LoadM <%= mod %>
 <% end -%>
 <% end -%>
 
-<% if @pre_vhost_includes -%>
+<% if @pre_vhost_includes and not @pre_vhost_includes.empty? -%>
 # Additional Include(s) before we start off our vhost declarations
-<% @pre_vhost_includes.each |incl| -%>
+<% @pre_vhost_includes.each do |incl| -%>
 Include <%= incl %>
 <% end -%>
 <% end -%>
-
-<% if @vhosts -%>
+<% if @vhosts and not @vhosts.emtpy? -%>
 # VirtualHosts
-<% @vhosts.each |vhost| -%>
-Use <%= vhost.type %> <%= vhost.protocol %> <%= vhost.domain %> <%= vhost.port %>
+<% @vhosts.each do |vhost| -%>
+Use <%= vhost.type %> <%= vhost.protocol %> <%= vhost.subdomain %> <% @instance %> <%= vhost.port %>
 <% end -%>
 <% end -%>
 
-<% if @pre_vhost_includes -%>
+<% if @pre_vhost_includes and not @pre_vhost_includes.empty? -%>
 # Additional Include(s) after our vhost declarations
-<% @post_vhost_includes.each |incl| -%>
+<% @post_vhost_includes.each do |incl| -%>
 Include <%= incl %>
 <% end -%>
 <% end -%>
-

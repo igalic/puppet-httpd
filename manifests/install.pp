@@ -33,4 +33,10 @@ class httpd::install {
       ensure => latest,
     }
   }
+
+  file { '/etc/bw/httpd/vhosts/':
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'wheel',
+  }
 }
