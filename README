@@ -38,18 +38,13 @@ It creates also a logrotate script and an upstart job.
 
 Finally, we can now go ahead and add a couple of vhosts:
 
-    httpd::vhost { 'pkg.esotericsystems.at':
-        domain  => 'esotericsystems.at'
+    httpd::vhost { 'pkg|esotericsystems.at':
         type    => 'static'
-        docroot => '/srv/pkgs/freight',
-        options => [ '+Indexes', ],
     }
-    httpd::vhost { 'blag.esotericsystems.at':
-        domain  => 'esotericsystems.at'
+    httpd::vhost { 'blag|esotericsystems.at':
         type    => 'php'
     }
-    httpd::vhost { 'awesomely.secure.esotericsystems.at':
-        domain  => 'esotericsystems.at',
+    httpd::vhost { 'awesomely.secure|esotericsystems.at':
         type    => 'wsgi',
         proto   => 'https',
     }
