@@ -14,7 +14,6 @@ define httpd::instance ( $instance = $title,
   $logrot_interval     = 'weekly',
   $logrot_minsize      = '10M',
   $conf_header_template = $httpd::params::conf_header_template,
-  $conf_footer_template = $httpd::params::conf_footer_template,
   $init_template       = $httpd::params::init_template,
   $logrot_template     = $httpd::params::logrot_template,
   $confdir             = $httpd::params::confdir,
@@ -51,10 +50,20 @@ define httpd::instance ( $instance = $title,
     content => template($conf_header_template),
     order   => '00000',
   }
-  concat::fragment { "${configfile}_footer":
-    target  => $configfile,
-    content => template($conf_footer_template),
-    order   => '99999',
+
+  unless $pre_vhost_includes == [] {
+    concat::fragment { "${configfile}_pre_vhost_includes":
+      target  => $configfile,
+      source => $pre_vhost_includes,
+      order   => '00001',
+    }
+  }
+  unless $post_vhost_includes == [] {
+    concat::fragment { "${configfile}_post_vhost_includes":
+      target  => $configfile,
+      source => $post_vhost_includes,
+      order   => '99999',
+    }
   }
 
   # creates the service -- doesn't manage the service yet!

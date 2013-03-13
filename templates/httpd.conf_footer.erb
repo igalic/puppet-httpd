@@ -1,6 +1,0 @@
-<% if @pre_vhost_includes and not @pre_vhost_includes.empty? -%>
-# Additional Include(s) after our vhost declarations
-<% @post_vhost_includes.each do |incl| -%>
-Include <%= incl %>
-<% end -%>
-<% end -%>

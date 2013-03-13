@@ -20,9 +20,3 @@ Use LoadM <%= mod %>
 <% end -%>
 <% end -%>
 
-<% if @pre_vhost_includes and not @pre_vhost_includes.empty? -%>
-# Additional Include(s) before we start off our vhost declarations
-<% @pre_vhost_includes.each do |incl| -%>
-Include <%= incl %>
-<% end -%>
-<% end -%>
