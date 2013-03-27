@@ -93,6 +93,5 @@ define httpd::instance ( $instance = $title,
     provider    => 'upstart',
     require     => File[ "/etc/init.d/httpd-${shortname}" ],
     subscribe   => File[ $configfile ],
-    refreshonly => true,
   }
 }
