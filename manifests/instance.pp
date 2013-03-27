@@ -53,16 +53,16 @@ define httpd::instance ( $instance = $title,
 
   unless $pre_vhost_includes == [] {
     concat::fragment { "${configfile}_pre_vhost_includes":
-      target  => $configfile,
+      target => $configfile,
       source => $pre_vhost_includes,
-      order   => '00001',
+      order  => '00001',
     }
   }
   unless $post_vhost_includes == [] {
     concat::fragment { "${configfile}_post_vhost_includes":
-      target  => $configfile,
+      target => $configfile,
       source => $post_vhost_includes,
-      order   => '99999',
+      order  => '99999',
     }
   }
 
@@ -86,5 +86,13 @@ define httpd::instance ( $instance = $title,
     content => template($logrot_template),
     owner   => 'root',
     group   => 'root',
+  }
+
+  service { "httpd-${shortname}":
+    ensure      => running,
+    provider    => 'upstart',
+    require     => File[ "/etc/init.d/httpd-${shortname}" ],
+    subscribe   => File[ $configfile ],
+    refreshonly => true,
   }
 }
