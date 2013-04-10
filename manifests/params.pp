@@ -11,5 +11,6 @@ class httpd::params {
   $confdir         = '/etc/bw/httpd'
   $vhostconf       = "${confdir}/vhosts"
   $logdir          = '/var/bwlog'
+  $webdir          = '/srv/web'
   $mpm             = 'worker'
 }

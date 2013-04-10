@@ -2,6 +2,7 @@ define httpd::vhost (
   $port                = '80',
   $proto               = 'http',
   $type                = 'static',
+  $manage_dir          = true,
   $order               = '',
   $conf_vhost_template = $httpd::params::conf_vhost_template,
   $vhostconf           = $httpd::params::vhostconf,
@@ -45,5 +46,33 @@ define httpd::vhost (
     target  => $configfile,
     content => template($conf_vhost_template),
     order   => $order_real,
+  }
+
+  if $manage_dir {
+    $webroot = "${httpd::params::webdir}/${instance}/${subdomain}"
+    file { $webroot:
+      owner  => 'root',
+      group  => 'wheel',
+      ensure => 'directory',
+    }
+    file { "${webroot}/htdocs":
+      owner   => 'root',
+      group   => 'wheel',
+      ensure  => 'directory',
+      require => File[ $webroot ],
+    }
+
+    if 'PHP' in $type {
+      file {[
+        "${webroot}/tmp",
+        "${webroot}/logs",
+        "${webroot}/session",
+      ]:
+        owner   => $instance,
+        group   => $instance,
+        ensure  => 'directory',
+        require => File[ "${webroot}/htdocs" ],
+      }
+    }
   }
 }
