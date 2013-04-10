@@ -1,6 +1,6 @@
 # This file is managed by Puppet.
 # Attemptes to modify it will be overwritten at the next puppet run.
-<%= @logdir -%>/<%= @instance -%>/error_log {
+<%= @logdir -%>/<%= @instance -%>/error_log <%= @webdir -%>/<%= @instance -%>/*/logs/application.log  {
   rotate 7
   <%= @logrot_interval %>
   minsize <%= @logrot_minsize %>
