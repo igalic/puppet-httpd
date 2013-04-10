@@ -18,7 +18,8 @@ define httpd::instance ( $instance = $title,
   $logrot_template     = $httpd::params::logrot_template,
   $confdir             = $httpd::params::confdir,
   $vhostconf           = $httpd::params::vhostconf,
-  $logdir              = "${httpd::params::logdir}/${instance}",
+  $logdir              = $httpd::params::logdir,
+  $webdir              = $httpd::params::webdir,
   $prefix              = $httpd::params::prefix,
   $httpd_bin           = "${prefix}/bin/httpd"
 ){
